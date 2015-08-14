@@ -1,0 +1,22 @@
+
+<div id = "dealer" class = "row">
+  <div class = "card" >
+    <img src = "/images/cards/cover.jpg"/>
+  </div>
+  <div class = "card">
+    <% value = session[:dealer][:cards_dealt][0][0]
+    suit = session[:dealer][:cards_dealt][0][1]%>
+    <img src =  <%= "/images/cards/#{suit}_#{value}.jpg" %> />
+  </div>
+</div>
+
+<div id = "player" class = "row">
+  <% session[:player][:cards_dealt].each do |value, suit| %>
+    <div class = "card">
+      <img src = <%= "/images/cards/#{suit}_#{value}.jpg" %> />
+    </div>
+  <%end%>
+</div>
+<div id = "hand_info">
+  Bet: $<%= session[:bet] %>
+</div>
