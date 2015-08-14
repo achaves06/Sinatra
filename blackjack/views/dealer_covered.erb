@@ -1,0 +1,8 @@
+<div class = "card" >
+  <img src = "/images/cards/cover.jpg"/>
+</div>
+<div class = "card">
+  <% value = session[:dealer][:cards_dealt][0][0]
+  suit = session[:dealer][:cards_dealt][0][1]%>
+  <img src =  <%= "/images/cards/#{suit}_#{value}.jpg" %> />
+</div>

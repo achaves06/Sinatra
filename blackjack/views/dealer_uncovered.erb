@@ -1,0 +1,5 @@
+<% session[:dealer][:cards_dealt].each do |value, suit| %>
+  <div class = "card">
+    <img src = <%= "/images/cards/#{suit}_#{value}.jpg" %> />
+  </div>
+<%end%>
