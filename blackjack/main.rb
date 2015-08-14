@@ -185,3 +185,8 @@ get '/stay' do
   session[:stay] = true
   redirect '/deal'
 end
+
+get '/test' do
+  erb :test
+
+end

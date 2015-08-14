@@ -1,25 +1,32 @@
-<div class = "container-fluid">
-  <%= session[:result_msg] %>
+
   <div class = "row">
     <div class = "col-xs-6">
-      <div id = "dealer">
-        <% if session[:stay] == false %>
-          <%= erb(:dealer_covered, :layout => false) %>
-        <% else %>
-          <%= erb(:dealer_uncovered, :layout => false) %>
-        <%end%>
+      <div class = "row">
+        <div id = "dealer">
+          <% if session[:stay] == false %>
+            <%= erb(:dealer_covered, :layout => false) %>
+          <% else %>
+            <%= erb(:dealer_uncovered, :layout => false) %>
+          <%end%>
+        </div>
       </div>
-      <div id = "player">
-        <% session[:player][:cards_dealt].each do |value, suit| %>
-          <div class = "card">
-            <img src = <%= "/images/cards/#{suit}_#{value}.jpg" %> />
-          </div>
-        <%end%>
+      <div class = "row">
+        <div id = "player">
+          <% session[:player][:cards_dealt].each do |value, suit| %>
+            <div class = "card">
+              <img src = <%= "/images/cards/#{suit}_#{value}.jpg" %> />
+            </div>
+          <%end%>
+        </div>
       </div>
-      <div id = "hand_info">
-        <%= erb(:hit_stay, :layout => false)%>
+      <div class = "row">
+        <div id = "hand_info">
+          <%= erb(:hit_stay, :layout => false)%>
+        </div>
       </div>
+      <%= session[:result_msg] %>
     </div>
+
     <div class = "col-xs-2">
       <% if session[:stay] %>
       <form class = "form-inline" action = "/bet" method = "post">
@@ -32,4 +39,3 @@
       <%end%>
     </div>
   </div>
-</div>
