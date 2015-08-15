@@ -41,7 +41,7 @@
       <form class = "form-inline" action = "/bet" method = "post">
         <div class="form-group">
           <label for="player_name">$</label>
-          <input type="number" class="form-control span1 input-large" name = "bet" id="bet" step = "any" min = "0" max = "<%=session[:player][:balance].to_f%>" value = <%= session[:bet] %>   />
+          <input type="number" class="form-control span1 input-large" name = "bet" id="bet" step = "any" required min = "0.5" max = "<%=session[:player][:balance].to_f%>" value = <%= session[:bet] %> />
           <button type="submit" class="btn btn-primary btn-large">Bet</button>
         </div>
       </form>

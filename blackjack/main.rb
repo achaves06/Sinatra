@@ -8,14 +8,16 @@ use Rack::Session::Cookie, :key => 'rack.session',
 
 helpers do
 
-  configure do
-    set :start_time, Time.now
+  def check_name
+    if session[:player][:name].nil?
+      redirect '/'
+    end
   end
 
-  before do
-    last_modified settings.start_time
-    etag settings.start_time.to_s
-    cache_control
+  def check_bet
+    if session[:bet].nil?
+      redirect '/welcome'
+    end
   end
 
   def setup_initial_deck(num_decks)
@@ -40,6 +42,7 @@ helpers do
     if session[:player][:total] >= 21
       session[:stay] = true # flag to allow dealer to start hitting
       session[:result_msg]= "<div class = 'alert alert-error'> <h3 class = 'text-alert'> You have busted... </h3></div>"
+      session[:winner] = true
     end
   end
 
@@ -157,13 +160,13 @@ post '/' do
 end
 
 get '/welcome' do
+  check_name
   erb :welcome
 end
 
 get '/play' do
-  if session[:player][:name] == nil
-    redirect '/'
-  end
+  check_name
+  check_bet
   if !session[:blackjack] && session[:stay] && session[:player][:total] <= 21
     dealers_turn
     find_winner
