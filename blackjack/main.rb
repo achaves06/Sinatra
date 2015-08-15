@@ -8,8 +8,14 @@ use Rack::Session::Cookie, :key => 'rack.session',
 
 helpers do
 
+def check_player
+  if session[:player].nil? or session[:player].empty?
+    redirect '/'
+  end
+end
+
   def check_name
-    if session[:player][:name].nil?
+    if session[:player][:name].nil? || session[:player][:name].empty?
       redirect '/'
     end
   end
@@ -31,7 +37,7 @@ helpers do
       deal!(:player)
       deal!(:dealer)
     end
-    blackjack
+    check_for_and_process_blackjack
   end
 
   def deal!(player)
@@ -72,12 +78,12 @@ helpers do
     if session[player][:ace]== 0
       puts "\n #{session[player][:name]} busted..."
     elsif session[player][:ace] >= 1 #convert their ace value from 11 to 1 and lower their ace count
-      session[player][:total] += -10
-      session[player][:ace] += -1
+      session[player][:total] -= 10
+      session[player][:ace] -= 1
     end
   end
 
-  def blackjack
+  def check_for_and_process_blackjack
     @player = session[:player]
     @dealer = session[:dealer]
     if @player[:total] == 21 || @dealer[:total] == 21
@@ -160,11 +166,13 @@ post '/' do
 end
 
 get '/welcome' do
+  check_player
   check_name
   erb :welcome
 end
 
 get '/play' do
+  check_player
   check_name
   check_bet
   if !session[:blackjack] && session[:stay] && session[:player][:total] <= 21
@@ -174,7 +182,7 @@ get '/play' do
   if session[:player][:balance] == 0 && session[:winner]
     erb :broke
   else
-    erb :play
+    erb :play, :locals => {:length => session[:dealer][:cards_dealt].length}
   end
 end
 
@@ -195,8 +203,4 @@ end
 get '/stay' do
   session[:stay] = true
   redirect '/play'
-end
-
-get '/test' do
-  erb :test
 end
