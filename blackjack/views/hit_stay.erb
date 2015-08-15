@@ -1,9 +1,6 @@
-<% if session[:player][:total] < 21 && !session[:stay]%>
-  <a class="btn btn-success btn-large" href="/hit" role="button">Hit</a>
-  <a class="btn btn-danger btn-large" href="/stay" role="button">Stay</a>
-<% else%>
-  <p> Your total is <%= session[:player][:total] %> </p>
-  <% if session[:player][:total] > 21 %>
-    <p class = "text-alert"> You have busted </p>
+<div>
+  <% if session[:player][:total] < 21 && !session[:stay]%>
+    <a class="btn btn-success btn-large" href="/hit" role="button">Hit</a>
+    <a class="btn btn-danger btn-large" href="/stay" role="button">Stay</a>
   <%end%>
-<%end%>
+</div>

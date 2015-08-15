@@ -37,14 +37,17 @@ helpers do
     session[:cards_dealt] << card
     session[player][:cards_dealt] << card
     session[player][:total]   = calculate_total(player, card)
-    session[:stay] = true if session[player][:total] >= 21 # flag to allow dealer to start hitting
+    if session[:player][:total] >= 21
+      session[:stay] = true # flag to allow dealer to start hitting
+      session[:result_msg]= "<div class = 'alert alert-error'> <h3 class = 'text-alert'> You have busted... </h3></div>"
+    end
   end
 
   def dealers_turn
     while session[:dealer][:total] < 17
       deal!(:dealer)
       if_ace_adjust_total_by_ten(:dealer) if session[:dealer][:total] > 21
-      erb :deal
+      erb :play
     end
   end
 
@@ -78,11 +81,14 @@ helpers do
       session[:blackjack] == true
       if @dealer[:total] == 21
         session[:stay] = true #this will show the dealers cards
-        session[:result_msg] = "<p class = 'text-warning'> You both have blackjacks, its' a push </p> " if @player[:total] == 21
-        session[:result_msg] = "<p class = 'text-alert'> Dealer blackjack, you lost... </p>" if @player[:total] != 21
+        if @player[:total] == 21
+          session[:result_msg] = "<div class= 'alert alert-warning'><h3 class = 'text-warning'> You both have blackjacks, its' a push </h3> </div> "
+          pay_win(0)
+        end
+        session[:result_msg] = "<div class= 'alert alert-error'><h3 class = 'text-alert'> The dealer has a Blackjack, you lost... </h3> </div>" if @player[:total] != 21
       else
         pay_win(1.5)
-        session[:result_msg] = "<p class = 'text-success'> Blackjack!! You won $ #{session[:winning]} %> ! </p>"
+        session[:result_msg] = "<div class= 'alert alert-success'><h3 class = 'text-success'> You have a Blackjack!! You won $ #{session[:winning]} ! </h3> </div>"
       end
       return true
     else
@@ -92,31 +98,37 @@ helpers do
   end
 
   def pay_win(multiplier)
-    @pay = multiplier * session[:bet].to_f
+    @pay = multiplier * session[:bet].to_f + session[:bet].to_f
     session[:winning] = @pay
     session[:player][:balance] += @pay
   end
 
   def find_winner
     if session[:dealer][:total] <= 21
-      session[:result_msg] = "<p class = 'text-warning'> It's a push </p>" if session[:player][:total] == session[:dealer][:total]
+      if session[:player][:total] == session[:dealer][:total]
+        session[:result_msg] = "<div class = 'alert alert-warning'> <h3 class = 'text-warning'> It's a push </h3></div>"
+        pay_win(0)
+      end
       if session[:player][:total] > session[:dealer][:total]
-        session[:result_msg] = "<p class = 'text-success'> You win! </p>"
+        session[:result_msg] = "<div class = 'alert alert-success'> <h3 class = 'text-success'> You won! $#{session[:bet]} have been added to your balance </h3></div>"
         pay_win(1)
       end
-      session[:result_msg] = "<p class = 'text-alert'> You lost... </p>" if session[:player][:total] < session[:dealer][:total]
+      session[:result_msg] = "<div class = 'alert alert-error'> <h3 class = 'text-alert'> You lost... </h3></div>" if session[:player][:total] < session[:dealer][:total]
     else
-      session[:result_msg] = "<p class = 'text-success'> You win! </p>"
+      session[:result_msg] = "<div class = 'alert alert-success'> <h3 class = 'text-success'> You won! $#{session[:bet]} have been added to your balance </h3></div>"
       pay_win(1)
     end
+    session[:winner] = true
   end
 
-  def reset_counts!
+  def reset_game!
     session[:player].merge!(total: 0, ace: 0, cards_dealt: [])
     session[:dealer].merge!(total: 0, ace: 0, cards_dealt: [])
     session[:stay] = false
     session[:cards_dealt] = []
     session[:result_msg] = ""
+    session[:blackjack] = false
+    session[:winner] = false
   end
 
   def add_cards_dealt_to_deck
@@ -127,10 +139,8 @@ helpers do
   end
 
   def update_balance
-    session[:balance] = session[:balance].to_f - session[:bet].to_f
+    session[:player][:balance] = session[:player][:balance].to_f - session[:bet].to_f
   end
-
-
 
 end
 
@@ -141,6 +151,8 @@ end
 post '/' do
   session[:player] = {name: params[:player_name], balance: 100, cards_dealt: [], total: 0, ace: 0 }
   session[:deck] = setup_initial_deck(1)
+  session[:cards_dealt] = []
+  session[:dealer] = {cards_dealt: [], total: 0, ace: 0 }
   redirect '/welcome'
 end
 
@@ -148,45 +160,40 @@ get '/welcome' do
   erb :welcome
 end
 
-post '/welcome' do
-  session[:bet] = params[:bet]
-  session[:balance] = session[:balance].to_f - session[:bet].to_f
-  session[:dealer] = {name: "Computer", cards_dealt: [], total: 0, ace:0}
-  session[:stay] = false
-  session[:cards_dealt] = []
-  session[:winner]=false
-  deal_two
-  redirect '/deal'
-end
-
-get '/deal' do
-  if !blackjack && session[:stay] && session[:player][:total] <= 21
+get '/play' do
+  if session[:player][:name] == nil
+    redirect '/'
+  end
+  if !session[:blackjack] && session[:stay] && session[:player][:total] <= 21
     dealers_turn
     find_winner
   end
-  erb :deal
+  if session[:player][:balance] == 0 && session[:winner]
+    erb :broke
+  else
+    erb :play
+  end
 end
 
 get '/hit' do
   deal!(:player)
-  redirect '/deal'
+  redirect '/play'
 end
 
 post '/bet' do
   session[:bet] = params[:bet]
-  add_cards_dealt_to_deck
-  reset_counts!
   update_balance
+  add_cards_dealt_to_deck if !session[:cards_dealt].nil?
+  reset_game!
   deal_two
-  erb :deal
+  erb :play
 end
 
 get '/stay' do
   session[:stay] = true
-  redirect '/deal'
+  redirect '/play'
 end
 
 get '/test' do
   erb :test
-
 end

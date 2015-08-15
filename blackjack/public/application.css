@@ -1,11 +1,54 @@
 
 .card {
   display: inline-block;
-  height: 20%;
-  width: 10%;
+  height: 25%;
+  width: 12.5%;
+  padding: 3px;
 }
 
 img {
   height: 100%;
   width: 100%;
+}
+
+#player, #dealer {
+  padding: 10px;
+  background-color: #F0F0F0;
+  margin: 5px;
+  padding-left: 0px;
+  margin-left: 0px;
+}
+
+#result_message, #buttons {
+  margin-left: 0px;
+}
+
+table {
+  text-align: center;
+  font-size: 20px;
+}
+
+p {
+  font-size = 32px;
+}
+
+.bet {
+  vertical-align: center;
+}
+
+form {
+  padding: 0px;
+  height: inherit;
+}
+
+.large-image {
+  height: 400px;
+  width: 400px;
+  text-align: center;
+}
+
+img {
+  display: bock;
+  margin-left: auto;
+  margin-right: auto;
 }
