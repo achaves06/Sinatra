@@ -24,7 +24,7 @@ img {
 }
 
 #result_message {
-  opacity: 0;
+  display: none;
 }
 
 table {

@@ -175,10 +175,6 @@ get '/play' do
   check_player
   check_name
   check_bet
-  if !session[:blackjack] && session[:stay] && session[:player][:total] <= 21
-    dealers_turn
-    find_winner
-  end
   if session[:player][:balance] == 0 && session[:winner]
     erb :broke
   else
@@ -202,11 +198,20 @@ end
 
 get '/stay' do
   session[:stay] = true
-  redirect '/play'
+  check_player
+  check_name
+  check_bet
+  if !session[:blackjack] && session[:stay] && session[:player][:total] <= 21
+    dealers_turn
+    find_winner
+  end
+  erb :dealer_uncovered , :layout => false
 end
 
-get '/dealer_vars' do
+get '/stats' do
   length =  session[:dealer][:cards_dealt].length
   total = session[:dealer][:total]
-  return length, total
+  balance = session[:player][:balance].to_f
+  message = session[:result_msg]
+  erb :stats, :layout => false, :locals => {:length => length, :total => total, :balance => balance, :message => message}
 end

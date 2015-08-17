@@ -1,6 +1,7 @@
 <head>
-  <script src= "/dealer_cards.js"></script>
+  <script src= "/dealer_cards_and_stats.js"></script>
 </head>
+
 <% counter = 1
   session[:dealer][:cards_dealt].each do |value, suit| %>
   <div class = "card" id = "<%= counter %>" style = "opacity: 0;">

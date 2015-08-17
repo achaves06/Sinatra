@@ -1,5 +1,5 @@
 <div id = "game">
-  <div class = "row">
+  <div class = "row" id = "stats">
     <div class = "span2">
       <table>
         <tr> <th> <%= session[:player][:name]%> </th> </tr>
@@ -11,11 +11,14 @@
         <tr> <th> Dealer</th> </tr>
         <tr>
           <td id = "dealer_total">
+            <!-- commenting out since Ajax will update dealer total
             <%if session[:stay] == true || session[:blackjack] %>
               <%= session[:dealer][:total] %>
             <%else%>
               --
             <%end%>
+          -->
+          --
           </td>
         </tr>
       </table>
@@ -25,19 +28,19 @@
     <div class = "span2">
       <table>
         <tr> <th> Balance </th> </tr>
-        <tr> <td> $<%= session[:player][:balance] %> </td> </tr>
+        <tr> <td id = "balance"> $<%= session[:player][:balance] %> </td> </tr>
       </table>
     </div>
     <% unless session[:winner] && session[:player][:balance] == 0 %> <!-- hide this section if after winner, balance is 0 aka user broke -->
       <div class = "span2">
         <table>
           <tr> <th> In Play </th> </tr>
-          <tr> <td> $<%= session[:winner] ? 0 : session[:bet] %></td> </tr>
+          <tr> <td id = "in_play"> $<%=session[:bet]%></td> </tr>
         </table>
       </div>
     <% end %>
     <% unless session[:winner] && session[:player][:balance] == 0 %>
-      <div class = "span3" style = "height: 44px;"> <!-- if I don't hardcode style, div adds blank space, not sure why -->
+      <div class = "span3" style = "height: 44px;" id = "actions"> <!-- if I don't hardcode style, div adds blank space, not sure why -->
         <% if session[:stay] && session[:player][:balance].to_f > 0 %>
         <form class = "form-inline" action = "/bet" method = "post">
           <div class="form-group">
@@ -59,7 +62,7 @@
         <div class = "span1">
           Dealer
         </div>
-        <div class = "span10" >
+        <div class = "span10" id = "dealer_cards">
           <% if session[:stay] == false %>
             <%= erb(:dealer_covered, :layout => false) %>
           <% else %>
