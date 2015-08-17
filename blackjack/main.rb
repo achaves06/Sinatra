@@ -182,7 +182,7 @@ get '/play' do
   if session[:player][:balance] == 0 && session[:winner]
     erb :broke
   else
-    erb :play, :locals => {:length => session[:dealer][:cards_dealt].length}
+    erb :play
   end
 end
 
@@ -203,4 +203,10 @@ end
 get '/stay' do
   session[:stay] = true
   redirect '/play'
+end
+
+get '/dealer_vars' do
+  length =  session[:dealer][:cards_dealt].length
+  total = session[:dealer][:total]
+  return length, total
 end

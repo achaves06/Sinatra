@@ -1,85 +1,87 @@
-<div class = "row">
-  <div class = "span2">
-    <table>
-      <tr> <th> <%= session[:player][:name]%> </th> </tr>
-      <tr> <td> <%= session[:player][:total]%></td> </tr>
-    </table>
-  </div>
-  <div class = "span2">
-    <table>
-      <tr> <th> Dealer</th> </tr>
-      <tr>
-        <td>
-          <%if session[:stay] == true || session[:blackjack] %>
-            <%= session[:dealer][:total] %>
-          <%else%>
-            --
-          <%end%>
-        </td>
-      </tr>
-    </table>
-  </div>
-  <div class = "span1">
-  </div>
-  <div class = "span2">
-    <table>
-      <tr> <th> Balance </th> </tr>
-      <tr> <td> $<%= session[:player][:balance] %> </td> </tr>
-    </table>
-  </div>
-  <% unless session[:winner] && session[:player][:balance] == 0 %> <!-- hide this section if after winner, balance is 0 aka user broke -->
+<div id = "game">
+  <div class = "row">
     <div class = "span2">
       <table>
-        <tr> <th> In Play </th> </tr>
-        <tr> <td> $<%= session[:winner] ? 0 : session[:bet] %></td> </tr>
+        <tr> <th> <%= session[:player][:name]%> </th> </tr>
+        <tr> <td> <%= session[:player][:total]%></td> </tr>
       </table>
     </div>
-  <% end %>
-  <% unless session[:winner] && session[:player][:balance] == 0 %>
-    <div class = "span3" style = "height: 44px;"> <!-- if I don't hardcode style, div adds blank space, not sure why -->
-      <% if session[:stay] && session[:player][:balance].to_f > 0 %>
-      <form class = "form-inline" action = "/bet" method = "post">
-        <div class="form-group">
-          <label for="player_name">$</label>
-          <input type="number" class="form-control span1 input-large" name = "bet" id="bet" step = "any" required min = "0.5" max = "<%=session[:player][:balance].to_f%>" value = <%= session[:bet] %> />
-          <button type="submit" class="btn btn-primary btn-large">Bet</button>
-        </div>
-      </form>
-      <%else%>
-        <%= erb(:hit_stay, :layout => false)%>
-      <%end%>
+    <div class = "span2">
+      <table>
+        <tr> <th> Dealer</th> </tr>
+        <tr>
+          <td id = "dealer_total">
+            <%if session[:stay] == true || session[:blackjack] %>
+              <%= session[:dealer][:total] %>
+            <%else%>
+              --
+            <%end%>
+          </td>
+        </tr>
+      </table>
     </div>
-  <%end%>
-</div>
-
-<div class = "row">
-  <div class = "span12">
-    <div class = "row" id = "dealer">
-      <div class = "span1">
-        Dealer
-      </div>
-      <div class = "span10" >
-        <% if session[:stay] == false %>
-          <%= erb(:dealer_covered, :layout => false) %>
-        <% else %>
-          <%= erb(:dealer_uncovered, :layout => false) %>
-        <%end%>
-      </div>
+    <div class = "span1">
     </div>
-    <div class = "row" id = "player">
-      <div class = "span1">
-        <%= session[:player][:name] %>
+    <div class = "span2">
+      <table>
+        <tr> <th> Balance </th> </tr>
+        <tr> <td> $<%= session[:player][:balance] %> </td> </tr>
+      </table>
+    </div>
+    <% unless session[:winner] && session[:player][:balance] == 0 %> <!-- hide this section if after winner, balance is 0 aka user broke -->
+      <div class = "span2">
+        <table>
+          <tr> <th> In Play </th> </tr>
+          <tr> <td> $<%= session[:winner] ? 0 : session[:bet] %></td> </tr>
+        </table>
       </div>
-      <div class = "span10">
-        <% session[:player][:cards_dealt].each do |value, suit| %>
-          <div class = "card">
-            <img src = <%= "/images/cards/#{suit}_#{value}.jpg" %> />
+    <% end %>
+    <% unless session[:winner] && session[:player][:balance] == 0 %>
+      <div class = "span3" style = "height: 44px;"> <!-- if I don't hardcode style, div adds blank space, not sure why -->
+        <% if session[:stay] && session[:player][:balance].to_f > 0 %>
+        <form class = "form-inline" action = "/bet" method = "post">
+          <div class="form-group">
+            <label for="player_name">$</label>
+            <input type="number" class="form-control span1 input-large" name = "bet" id="bet" step = "any" required min = "0.5" max = "<%=session[:player][:balance].to_f%>" value = <%= session[:bet] %> />
+            <button type="submit" class="btn btn-primary btn-large">Bet</button>
           </div>
+        </form>
+        <%else%>
+          <%= erb(:hit_stay, :layout => false)%>
         <%end%>
       </div>
+    <%end%>
+  </div>
+
+  <div class = "row">
+    <div class = "span12">
+      <div class = "row" id = "dealer">
+        <div class = "span1">
+          Dealer
+        </div>
+        <div class = "span10" >
+          <% if session[:stay] == false %>
+            <%= erb(:dealer_covered, :layout => false) %>
+          <% else %>
+            <%= erb(:dealer_uncovered, :layout => false) %>
+          <%end%>
+        </div>
+      </div>
+      <div class = "row" id = "player">
+        <div class = "span1">
+          <%= session[:player][:name] %>
+        </div>
+        <div class = "span10">
+          <% session[:player][:cards_dealt].each do |value, suit| %>
+            <div class = "card">
+              <img src = <%= "/images/cards/#{suit}_#{value}.jpg" %> />
+            </div>
+          <%end%>
+        </div>
+      </div>
+      <div class = "row" id = "result_message">
+        <%= session[:result_msg] %>
+      <div/>
     </div>
-    <div class = "row" id = "result_message">
-      <%= session[:result_msg] %>
-    <div/>
   </div>
 </div>
