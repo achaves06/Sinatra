@@ -15,9 +15,13 @@ $(document).ready(function() {
     var total = vars[0];
     var length = Number(vars[1]);
     var balance = Number(vars[2]);
+    var result = vars[3];
     var delay = (length -1 )* 750 + 500;
     setTimeout(function() {
       $('#dealer_total').html(total);
+    }, delay);
+    setTimeout(function () {
+      $('#result_message').html(result);
     }, delay);
     setTimeout(function () {
       $('#result_message').fadeIn();
