@@ -45,7 +45,7 @@ end
     session[:cards_dealt] << card
     session[player][:cards_dealt] << card
     session[player][:total]   = calculate_total(player, card)
-    if session[:player][:total] >= 21
+    if session[:player][:total] > 21
       session[:stay] = true # flag to allow dealer to start hitting
       session[:result_msg]= "<div class = 'alert alert-error'> <h3 class = 'text-alert'> You have busted... </h3></div>"
       session[:winner] = true
@@ -63,7 +63,8 @@ end
   def calculate_total(player, card)
     card_rank = card[0]
     if card_rank == "ace"
-      session[player][:total] <= 10 ? session[player][:total] += 11 : session[player][:total] += 1
+      #session[player][:total] <= 10 ?
+      session[player][:total] += 11 #: session[player][:total] += 1
       session[player][:ace] += 1
     elsif card_rank == "jack" or card_rank == "queen" or card_rank == "king"
       session[player][:total] += 10
