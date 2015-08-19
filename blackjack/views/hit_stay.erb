@@ -1,6 +1,10 @@
 <div>
   <% if session[:player][:total] < 21 && !session[:stay]%>
-    <a class="btn btn-success btn-large" href="/hit" role="button" id = "hit">Hit</a>
-    <a class="btn btn-danger btn-large" href="/stay" role="button" id = "stay">Stay</a>
+  <form class = "span1 inline-form" action = '/hit' method = 'post'>
+    <button type="submit" class="btn btn-success btn-large" role="button" id = "hit">Hit</button>
+  </form>
+  <form class = "span1 inline-form" action = '/stay' method = 'post'>
+    <button type = "submit" class="btn btn-danger btn-large" role="button" id = "stay">Stay</button>
+  </form>
   <%end%>
 </div>

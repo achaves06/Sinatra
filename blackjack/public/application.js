@@ -5,7 +5,7 @@ $(document).ready(function() {
   $(document).on(function() {
     $('#hit').click(function() {
       $.ajax({
-        type: 'GET',
+        type: 'POST',
         url: '/hit',
       }).done(function(msg) {
         $('#game').replaceWith(msg);
@@ -17,7 +17,7 @@ $(document).ready(function() {
 
     $('#bet').click(function() {
       $.ajax({
-        type: 'GET',
+        type: 'POST',
         url: '/bet',
       }).done(function(msg) {
         $('#game').replaceWith(msg);
@@ -29,7 +29,7 @@ $(document).ready(function() {
 
   $('#stay').click(function() {
     $.ajax({
-      type: 'GET',
+      type: 'POST',
       url: '/stay',
     }).done(function(msg) {
       $('#dealer_cards').html(msg);

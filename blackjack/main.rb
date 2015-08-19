@@ -186,7 +186,7 @@ get '/play' do
   end
 end
 
-get '/hit' do
+post '/hit' do
   deal!(:player)
   redirect '/play'
 end
@@ -200,7 +200,7 @@ post '/bet' do
   erb :play
 end
 
-get '/stay' do
+post '/stay' do
   session[:stay] = true
   check_player
   check_name
