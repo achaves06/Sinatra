@@ -45,10 +45,13 @@ end
     session[:cards_dealt] << card
     session[player][:cards_dealt] << card
     session[player][:total]   = calculate_total(player, card)
-    if session[:player][:total] > 21
+    if session[:player][:total] >= 21
       session[:stay] = true # flag to allow dealer to start hitting
-      session[:result_msg]= "<div class = 'alert alert-error'> <h3 class = 'text-alert'> You have busted... </h3></div>"
-      session[:winner] = true
+      if session[:player][:total] > 21
+        session[:result_msg]= "<div class = 'alert alert-error'> <h3 class = 'text-alert'> You have busted... </h3></div>"
+      else
+        find_winner
+      end
     end
   end
 
